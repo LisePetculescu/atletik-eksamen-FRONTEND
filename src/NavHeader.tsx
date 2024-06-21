@@ -6,10 +6,10 @@ export default function NavHeader() {
     <nav className="navbar">
       <ul>
         <li>
-          <NavLink to="/addParticipant">Atleter</NavLink>
+          <NavLink to="/">Resultater</NavLink>
         </li>
         <li>
-          <NavLink to="/results">Resultater</NavLink>
+          <NavLink to="/addParticipant">Atleter</NavLink>
         </li>
       </ul>
     </nav>

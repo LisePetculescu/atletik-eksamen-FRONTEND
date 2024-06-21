@@ -4,6 +4,7 @@ import Layout from './Layout'
 import './App.css'
 // import CreateParticipantForm from './components/CreateParticipantForm'
 import ParticipantsCreateUpdatePage from './components/ParticipantsCreateUpdatePage'
+import ResultsPage from './components/ResultsPage'
 
 function App() {
   
@@ -11,9 +12,8 @@ function App() {
   return (
     <Layout>
       <Routes>
-        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={<ResultsPage />} />
         <Route path="/addParticipant" element={<ParticipantsCreateUpdatePage />} />
-        {/* <Route path="/contact" element={<Contact />} /> */}
       </Routes>
     </Layout>
   )
