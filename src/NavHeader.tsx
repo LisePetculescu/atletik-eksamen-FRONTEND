@@ -9,7 +9,7 @@ export default function NavHeader() {
           <NavLink to="/addParticipant">Atleter</NavLink>
         </li>
         <li>
-          <NavLink to="/addHotel">Add Hotel</NavLink>
+          <NavLink to="/results">Resultater</NavLink>
         </li>
       </ul>
     </nav>

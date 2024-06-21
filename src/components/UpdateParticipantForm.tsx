@@ -4,10 +4,11 @@ import { ParticipantRequest, ParticipantResponse } from "../global_interfaces/pa
 
 export default function UpdateParticipantForm({ participantId }: { participantId: number }) {
   const [name, setName] = useState("");
-  const [age, setAge] = useState(0);
+  const [age, setAge] = useState(6);
   const [gender, setGender] = useState("");
   const [clubName, setClubName] = useState("");
   const [participant, setParticipant] = useState<ParticipantResponse | null>(null); // State to hold participant data
+  const [updateSuccess, setUpdateSuccess] = useState(false); // State to track update success
 
   const clubsData = [
     "Københavns Atletik Forening",
@@ -41,10 +42,10 @@ export default function UpdateParticipantForm({ participantId }: { participantId
     fetchParticipant();
   }, [participantId]);
 
-   const handleChangeClubName = (e: React.ChangeEvent<HTMLSelectElement>) => {
-     setClubName(e.target.value);
-   };
-   
+  const handleChangeClubName = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setClubName(e.target.value);
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -63,6 +64,13 @@ export default function UpdateParticipantForm({ participantId }: { participantId
       console.log("Participant updated:", updatedParticipant);
 
       // Handle success, e.g., show a success message or redirect
+      setUpdateSuccess(true);
+
+      // Reset form fields
+      setName("");
+      setAge(6);
+      setGender("");
+      setClubName("");
     } catch (error) {
       console.error("Error updating participant:", error);
       // Handle error, e.g., show an error message to the user
@@ -74,20 +82,22 @@ export default function UpdateParticipantForm({ participantId }: { participantId
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Name:
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-      </label>
-      <br />
-      <label>
-        Age:
-        <input type="number" value={age} onChange={(e) => setAge(Number(e.target.value))} required />
-      </label>
-      <br />
-      <label>
-        Gender:
-        <select value={gender} onChange={(e) => setGender(e.target.value)} required>
+    <>
+      <h2>Tilføj eller rediger deltagere her:</h2>
+      <form onSubmit={handleSubmit} style={{ fontSize: "1.5rem" }}>
+        <label>
+          Name:
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+        </label>
+        <br />
+        <label>
+          Age:
+          <input type="number" value={age} onChange={(e) => setAge(Number(e.target.value))} required />
+        </label>
+        <br />
+        <label>
+          Gender:
+          <select value={gender} onChange={(e) => setGender(e.target.value)} required>
             <option value="">Select Gender</option>
             <option value="MALE">Male</option>
             <option value="FEMALE">Female</option>
@@ -95,23 +105,25 @@ export default function UpdateParticipantForm({ participantId }: { participantId
             <option value="TRANSmTf">TransMtF</option>
             <option value="TRANSfTm">TransFtM</option>
             <option value="OTHER">Other</option>
-        </select>
-      </label>
-      <br />
-      <label>
-        Club Name:
-        <select value={clubName} onChange={handleChangeClubName} required>
-          <option value="">Select a club</option>
-          {clubsData.map((club, index) => (
-            <option key={index} value={club}>
-              {club}
-            </option>
-          ))}
-        </select>
-      </label>
-      <br />
-      <p>Selected Club: {clubName}</p>
-      <button type="submit">Update Participant</button>
-    </form>
+          </select>
+        </label>
+        <br />
+        <label>
+          Club Name:
+          <select value={clubName} onChange={handleChangeClubName} required>
+            <option value="">Select a club</option>
+            {clubsData.map((club, index) => (
+              <option key={index} value={club}>
+                {club}
+              </option>
+            ))}
+          </select>
+        </label>
+        <br />
+        <p>Selected Club: {clubName}</p>
+        <button type="submit">Opdater</button>
+      </form>
+      {updateSuccess && <div>Update successful! Form cleared.</div>}
+    </>
   );
 }

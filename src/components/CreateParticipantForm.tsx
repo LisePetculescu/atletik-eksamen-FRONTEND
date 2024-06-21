@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { addParticipant } from "../services/fetchParticipants";
 import { ParticipantRequest } from "../global_interfaces/participant_interface";
 
-
 export default function CreateParticipantForm() {
   const [name, setName] = useState("");
-  const [age, setAge] = useState(0);
+  const [age, setAge] = useState(6);
   const [gender, setGender] = useState("");
   const [clubName, setClubName] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const clubsData = [
     "Københavns Atletik Forening",
@@ -33,7 +34,7 @@ export default function CreateParticipantForm() {
       name: name,
       age: age,
       gender: gender,
-      clubName: clubName, // Assuming clubName corresponds to 'club' in ParticipantRequest
+      clubName: clubName,
     };
 
     try {
@@ -42,15 +43,35 @@ export default function CreateParticipantForm() {
       const addedParticipant = await addParticipant(participantData);
       console.log("Participant added:", addedParticipant);
 
-      // Handle success, e.g., show a success message or redirect
-    } catch (error) {
-      console.error("Error adding participant:", error);
-      // Handle error, e.g., show an error message to the user
+      // Handle success
+      setSuccessMessage("Participant added successfully!");
+      setErrorMessage(""); // Clear any previous error messages
+
+      // Reset form fields
+      setName("");
+      setAge(6); // Assuming you want to reset age to 6
+      setGender("");
+      setClubName("");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error adding participant:", error);
+        setErrorMessage("Error adding participant: " + error.message);
+      } else {
+        // Handle cases where the error is not an Error object
+        console.error("An unexpected error occurred:", error);
+        setErrorMessage("An unexpected error occurred");
+      }
+      // Clear success message if there was any
+      setSuccessMessage("");
     }
   };
 
   return (
-      <form onSubmit={handleSubmit}>
+    <>
+      <h2>Tilføj eller rediger deltagere her:</h2>
+      {successMessage && <div style={{ color: "green" }}>{successMessage}</div>}
+      {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
+      <form onSubmit={handleSubmit} style={{ fontSize: "1.5rem" }}>
         <label>
           Name:
           <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
@@ -87,7 +108,8 @@ export default function CreateParticipantForm() {
         </label>
         <br />
         <p>Selected Club: {clubName}</p>
-        <button type="submit">Submit</button>
+        <button type="submit">Tilføj</button>
       </form>
+    </>
   );
 }

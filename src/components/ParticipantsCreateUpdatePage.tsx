@@ -32,11 +32,6 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
     setIsCreating(false);
   };
 
-  // Function to switch to create form
-  const handleCreateParticipant = () => {
-    setSelectedParticipantId(null);
-    setIsCreating(true);
-  };
 
   // Function to handle filtering based on all criteria
   const applyFilters = () => {
@@ -205,7 +200,7 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
      
       {isCreating ? <CreateParticipantForm /> : <UpdateParticipantForm participantId={selectedParticipantId!} />}
 
-      <button onClick={handleCreateParticipant}>Create New Participant</button>
+      {/* <button onClick={handleCreateParticipant}>Create New Participant</button> */}
     </div>
   );
 }
