@@ -1,0 +1,35 @@
+/* NavHeader.css */
+
+.navbar {
+  background-color: #333; /* Background color for the navbar */
+  width: 100%; /* Full width of the page */
+  padding: 10px 20px; /* Padding inside the navbar */
+}
+
+.navbar ul {
+  list-style-type: none; /* Remove default list styles */
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Ensure items do not overflow */
+}
+
+.navbar ul li {
+  display: inline-block; /* Display list items inline */
+}
+
+.navbar ul li a {
+  display: block;
+  color: white; /* Text color of links */
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none; /* Remove underline from links */
+}
+
+.navbar ul li a:hover {
+  background-color: #555; /* Background color on hover */
+}
+
+.navbar ul li a.active {
+  background-color: #4CAF50; /* Active link background color */
+  text-decoration: underline; /* Underline active link */
+}
