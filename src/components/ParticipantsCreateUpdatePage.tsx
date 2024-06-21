@@ -9,7 +9,6 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
   const [isCreating, setIsCreating] = useState(true); // Manage state to toggle between create and update form
   const [selectedParticipantId, setSelectedParticipantId] = useState<number | null>(null);
   const [participants, setParticipants] = useState<ParticipantResponse[]>([]);
-  
   const [filteredParticipants, setFilteredParticipants] = useState<ParticipantResponse[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [genderFilter, setGenderFilter] = useState<string>(""); // State for gender filter
@@ -26,11 +25,6 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
       setFilteredParticipants(data); // Initialize filtered participants with all participants
     });
   }, []);
-
-
-
- 
-  
 
   // Function to switch to update form
   const handleEditParticipant = (participantId: number) => {
@@ -60,7 +54,7 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
       if (clubFilter && participant.clubName !== clubFilter) {
         matchesSearch = false;
       }
-      if (disciplineFilter && !participant.discipline.includes(disciplineFilter)) {
+      if (disciplineFilter && !participant.disciplines.some((discipline) => discipline.name === disciplineFilter)) {
         matchesSearch = false;
       }
       return matchesSearch;
@@ -103,11 +97,11 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
 
   useEffect(() => {
     applyFilters();
-  }, [searchTerm, genderFilter, ageGroupFilter, clubFilter, disciplineFilter, sortBy, sortOrder]);
+  }, [searchTerm, genderFilter, ageGroupFilter, clubFilter, disciplineFilter, sortBy, sortOrder, participants]);
 
   return (
     <div>
-      <h1>Tilføj og Rediger Deltager</h1>
+      <h1>Se, Tilføj og Rediger Deltager</h1>
 
       {/* Search input */}
       <input type="text" placeholder="Search by name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
@@ -155,9 +149,9 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
           <select value={disciplineFilter} onChange={(e) => setDisciplineFilter(e.target.value)}>
             <option value="">All</option>
             {/* Populate options dynamically from available disciplines */}
-            {Array.from(new Set(participants.flatMap((p) => p.discipline))).map((discipline, index) => (
-              <option key={index} value={discipline}>
-                {discipline}
+            {Array.from(new Set(participants.flatMap((p) => p.disciplines.map((d) => d.name)))).map((disciplineName, index) => (
+              <option key={index} value={disciplineName}>
+                {disciplineName}
               </option>
             ))}
           </select>
@@ -185,25 +179,30 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
             </th>
             <th>Gender</th>
             <th>Club Name</th>
-            <th>Action</th>
+            <th>Disciplines</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
-          {filteredParticipants.map((participant) => (
-            <tr key={participant.id}>
-              <td>{participant.name}</td>
-              <td>{participant.age}</td>
-              <td>{participant.gender}</td>
-              <td>{participant.clubName}</td>
-              <td>
-                <button onClick={() => handleEditParticipant(participant.id!)}>Edit</button>
-              </td>
-            </tr>
-          ))}
+          {filteredParticipants.map((participant) => {
+            return (
+              <tr key={participant.id}>
+                <td>{participant.name}</td>
+                <td>{participant.age}</td>
+                <td>{participant.gender}</td>
+                <td>{participant.clubName}</td>
+                <td>{participant.disciplines.map((discipline) => discipline.name).join(", ")}</td> {/* Display discipline names */}
+                <td>
+                  <button onClick={() => handleEditParticipant(participant.id!)}>Edit</button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
       {/* Conditional rendering based on isCreating state */}
+     
       {isCreating ? <CreateParticipantForm /> : <UpdateParticipantForm participantId={selectedParticipantId!} />}
 
       <button onClick={handleCreateParticipant}>Create New Participant</button>
