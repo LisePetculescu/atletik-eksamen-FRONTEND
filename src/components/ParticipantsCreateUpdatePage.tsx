@@ -4,7 +4,6 @@ import UpdateParticipantForm from "./UpdateParticipantForm";
 import { getAllParticipants } from "../services/fetchParticipants";
 import { ParticipantResponse } from "../global_interfaces/participant_interface";
 
-
 export default function ParticipantsCreateUpdatePage(): JSX.Element {
   const [isCreating, setIsCreating] = useState(true); // Manage state to toggle between create and update form
   const [selectedParticipantId, setSelectedParticipantId] = useState<number | null>(null);
@@ -31,7 +30,6 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
     setSelectedParticipantId(participantId);
     setIsCreating(false);
   };
-
 
   // Function to handle filtering based on all criteria
   const applyFilters = () => {
@@ -197,8 +195,9 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
       </table>
 
       {/* Conditional rendering based on isCreating state */}
-     
+
       {isCreating ? <CreateParticipantForm /> : <UpdateParticipantForm participantId={selectedParticipantId!} />}
+      {/* {isCreating ? <CreateParticipantForm /> : <UpdateParticipantForm participantId={selectedParticipantId!} setSelectedParticipantId={setSelectedParticipantId} />} */}
 
       {/* <button onClick={handleCreateParticipant}>Create New Participant</button> */}
     </div>
