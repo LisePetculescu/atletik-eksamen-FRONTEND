@@ -184,7 +184,7 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
                 <td>{participant.age}</td>
                 <td>{participant.gender}</td>
                 <td>{participant.clubName}</td>
-                <td>{participant.disciplines.map((discipline) => discipline.name).join(", ")}</td> {/* Display discipline names */}
+                <td>{participant.disciplines.map((discipline) => discipline.name)}</td> {/* Display discipline names */}
                 <td>
                   <button onClick={() => handleEditParticipant(participant.id!)}>Edit</button>
                 </td>

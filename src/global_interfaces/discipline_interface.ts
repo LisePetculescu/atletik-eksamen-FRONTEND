@@ -6,6 +6,7 @@ export type DisciplineResponse = {
 };
 
 export type DisciplineRequest = {
+    id?: number;
     name: string;
     resultType: string;
 };

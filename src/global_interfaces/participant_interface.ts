@@ -16,4 +16,5 @@ export type ParticipantRequest = {
     age: number;
     clubName: string;
     gender: string;
+    disciplines: DisciplineResponse[]
 };

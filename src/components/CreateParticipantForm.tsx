@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { addParticipant } from "../services/fetchParticipants";
 import { ParticipantRequest } from "../global_interfaces/participant_interface";
+import { getAllDisciplines } from "../services/fetchDisciplines";
+import { DisciplineResponse } from "../global_interfaces/discipline_interface";
 
 export default function CreateParticipantForm() {
   const [name, setName] = useState("");
   const [age, setAge] = useState(6);
   const [gender, setGender] = useState("");
   const [clubName, setClubName] = useState("");
+  const [disciplines, setDisciplines] = useState<DisciplineResponse[]>([]);
+  const [disciplineData, setDisciplineData] = useState<DisciplineResponse[]>([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -23,9 +27,41 @@ export default function CreateParticipantForm() {
     "Hillerød Atletik Forening",
   ];
 
+  useEffect(() => {
+    console.log("Fetching disciplines...");
+    // Fetch disciplines here
+    getAllDisciplines().then((data) => {setDisciplineData(data)
+    }); 
+
+  }, []);
+
+ 
+
   const handleChangeClubName = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setClubName(e.target.value);
   };
+
+  const handleChangeDiscipline = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const disciplineName = e.target.value;
+    if (disciplines.find((disciplin) => disciplineName == disciplin.name )) {
+      return
+    }
+    const foundDiscipline = disciplineData.find((discipline) => disciplineName == discipline.name);
+    if (foundDiscipline)
+      setDisciplines([... disciplines, foundDiscipline]);
+    // setDisciplines([... disciplines, disciplineData.find((discipline) => disciplineName == discipline.name)!]);
+    
+  }
+
+  const removeDiscipline = (incomingDisciplin: DisciplineResponse) => {
+    const filterDisciplines = disciplines.filter((current) => current.id !== incomingDisciplin.id)
+    setDisciplines(filterDisciplines)
+
+  }
+
+
+
+
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -35,6 +71,7 @@ export default function CreateParticipantForm() {
       age: age,
       gender: gender,
       clubName: clubName,
+      disciplines: disciplines
     };
 
     try {
@@ -52,6 +89,7 @@ export default function CreateParticipantForm() {
       setAge(6); // Assuming you want to reset age to 6
       setGender("");
       setClubName("");
+      
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error("Error adding participant:", error);
@@ -107,8 +145,31 @@ export default function CreateParticipantForm() {
           </select>
         </label>
         <br />
-        <p>Selected Club: {clubName}</p>
-        <button type="submit">Tilføj</button>
+        <label>
+          Discipliner:
+          <select onChange={handleChangeDiscipline} required>
+            <option value="">Select discipline</option>
+            {disciplineData.map((discipline, index) => (
+              <option key={index} value={discipline.name}>
+                {discipline.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <br />
+        <div style={{fontSize:"1rem"}}>
+          <ul>
+            Selected disciplines:{" "}
+            {disciplines.map((discipline) => (
+              <li>
+                {discipline.name}
+                <button onClick={() => removeDiscipline(discipline)}>x</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <button type="submit" >Tilføj</button>
       </form>
     </>
   );
