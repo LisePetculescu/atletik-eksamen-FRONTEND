@@ -49,19 +49,20 @@ export default function UpdateParticipantForm({ participantId }: { participantId
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const participantData: ParticipantRequest = {
-      id: participantId,
-      name: name,
-      age: age,
-      gender: gender,
-      clubName: clubName,
-    };
+    // const participantData: ParticipantRequest = {
+    //   id: participantId,
+    //   name: name,
+    //   age: age,
+    //   gender: gender,
+    //   clubName: clubName,
+    //   disciplines: disciplines
+    // };
 
     try {
-      console.log("Updating participant data:", participantData);
+      // console.log("Updating participant data:", participantData);
 
-      const updatedParticipant = await updateParticipant(participantId, participantData);
-      console.log("Participant updated:", updatedParticipant);
+      // const updatedParticipant = await updateParticipant(participantId, participantData);
+      // console.log("Participant updated:", updatedParticipant);
 
       // Handle success, e.g., show a success message or redirect
       setUpdateSuccess(true);
@@ -120,7 +121,6 @@ export default function UpdateParticipantForm({ participantId }: { participantId
           </select>
         </label>
         <br />
-        <p>Selected Club: {clubName}</p>
         <button type="submit">Opdater</button>
       </form>
       {updateSuccess && <div>Update successful! Form cleared.</div>}

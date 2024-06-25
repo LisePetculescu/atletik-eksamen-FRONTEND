@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { addParticipant } from "../services/fetchParticipants";
-import { ParticipantRequest } from "../global_interfaces/participant_interface";
+import { addParticipant, getAllParticipants } from "../services/fetchParticipants";
+import { ParticipantRequest, ParticipantResponse } from "../global_interfaces/participant_interface";
 import { getAllDisciplines } from "../services/fetchDisciplines";
 import { DisciplineResponse } from "../global_interfaces/discipline_interface";
+import { getParticipantById, updateParticipant } from "../services/fetchParticipants";
 
-export default function CreateParticipantForm() {
+export default function CreateParticipantForm({ participantId, setParticipants }: { participantId: number, setParticipants: (participant: ParticipantResponse[]) => void}) {
   const [name, setName] = useState("");
   const [age, setAge] = useState(6);
   const [gender, setGender] = useState("");
@@ -30,12 +31,31 @@ export default function CreateParticipantForm() {
   useEffect(() => {
     console.log("Fetching disciplines...");
     // Fetch disciplines here
-    getAllDisciplines().then((data) => {setDisciplineData(data)
-    }); 
-
+    getAllDisciplines().then((data) => {
+      setDisciplineData(data);
+    });
   }, []);
 
- 
+  useEffect(() => {
+    // Fetch participant data based on participantId
+    if (participantId) {
+      const fetchParticipant = async () => {
+        try {
+          const fetchedParticipant = await getParticipantById(participantId);
+          setName(fetchedParticipant.name);
+          setAge(fetchedParticipant.age);
+          setGender(fetchedParticipant.gender);
+          setClubName(fetchedParticipant.clubName);
+          setDisciplines(fetchedParticipant.disciplines);
+        } catch (error) {
+          console.error("Error fetching participant:", error);
+          // Handle error fetching participant data
+        }
+      };
+
+      fetchParticipant();
+    }
+  }, [participantId]);
 
   const handleChangeClubName = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setClubName(e.target.value);
@@ -43,25 +63,18 @@ export default function CreateParticipantForm() {
 
   const handleChangeDiscipline = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const disciplineName = e.target.value;
-    if (disciplines.find((disciplin) => disciplineName == disciplin.name )) {
-      return
+    if (disciplines.find((disciplin) => disciplineName == disciplin.name)) {
+      return;
     }
     const foundDiscipline = disciplineData.find((discipline) => disciplineName == discipline.name);
-    if (foundDiscipline)
-      setDisciplines([... disciplines, foundDiscipline]);
+    if (foundDiscipline) setDisciplines([...disciplines, foundDiscipline]);
     // setDisciplines([... disciplines, disciplineData.find((discipline) => disciplineName == discipline.name)!]);
-    
-  }
+  };
 
   const removeDiscipline = (incomingDisciplin: DisciplineResponse) => {
-    const filterDisciplines = disciplines.filter((current) => current.id !== incomingDisciplin.id)
-    setDisciplines(filterDisciplines)
-
-  }
-
-
-
-
+    const filterDisciplines = disciplines.filter((current) => current.id !== incomingDisciplin.id);
+    setDisciplines(filterDisciplines);
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -71,25 +84,43 @@ export default function CreateParticipantForm() {
       age: age,
       gender: gender,
       clubName: clubName,
-      disciplines: disciplines
+      disciplines: disciplines,
     };
+
+    if (!participantData.disciplines) {
+      setErrorMessage("Oh NOOOOOOOOOO! There's no disciplines :'(");
+      return;
+    }
+
+    if (participantId) {
+      participantData.id = participantId;
+    }
 
     try {
       console.log("Participant data:", participantData);
 
-      const addedParticipant = await addParticipant(participantData);
-      console.log("Participant added:", addedParticipant);
+      if (participantId) {
+        console.log("Updating participant data:", participantData);
 
-      // Handle success
-      setSuccessMessage("Participant added successfully!");
-      setErrorMessage(""); // Clear any previous error messages
+        const updatedParticipant = await updateParticipant(participantId, participantData);
+        console.log("Participant updated:", updatedParticipant);
+
+        setSuccessMessage("Participant updated successfully!");
+      } else {
+        const addedParticipant = await addParticipant(participantData);
+        console.log("Participant added:", addedParticipant);
+
+        // Handle success
+        setSuccessMessage("Participant added successfully!");
+        setErrorMessage(""); // Clear any previous error messages
+      }
 
       // Reset form fields
       setName("");
       setAge(6); // Assuming you want to reset age to 6
       setGender("");
       setClubName("");
-      
+      setParticipants(await getAllParticipants())
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error("Error adding participant:", error);
@@ -147,7 +178,7 @@ export default function CreateParticipantForm() {
         <br />
         <label>
           Discipliner:
-          <select onChange={handleChangeDiscipline} required>
+          <select onChange={handleChangeDiscipline}>
             <option value="">Select discipline</option>
             {disciplineData.map((discipline, index) => (
               <option key={index} value={discipline.name}>
@@ -157,11 +188,11 @@ export default function CreateParticipantForm() {
           </select>
         </label>
         <br />
-        <div style={{fontSize:"1rem"}}>
+        <div style={{ fontSize: "1rem" }}>
           <ul>
             Selected disciplines:{" "}
             {disciplines.map((discipline) => (
-              <li>
+              <li key={discipline.id}>
                 {discipline.name}
                 <button onClick={() => removeDiscipline(discipline)}>x</button>
               </li>
@@ -169,7 +200,8 @@ export default function CreateParticipantForm() {
           </ul>
         </div>
 
-        <button type="submit" >Tilføj</button>
+        <button type="submit">Tilføj</button>
+        
       </form>
     </>
   );

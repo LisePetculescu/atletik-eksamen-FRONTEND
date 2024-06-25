@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import CreateParticipantForm from "./CreateParticipantForm";
-import UpdateParticipantForm from "./UpdateParticipantForm";
-import { getAllParticipants } from "../services/fetchParticipants";
+// import UpdateParticipantForm from "./UpdateParticipantForm";
+import { deleteParticipant, getAllParticipants } from "../services/fetchParticipants";
 import { ParticipantResponse } from "../global_interfaces/participant_interface";
 
 export default function ParticipantsCreateUpdatePage(): JSX.Element {
-  const [isCreating, setIsCreating] = useState(true); // Manage state to toggle between create and update form
+  // const [isCreating, setIsCreating] = useState(true); // Manage state to toggle between create and update form
   const [selectedParticipantId, setSelectedParticipantId] = useState<number | null>(null);
   const [participants, setParticipants] = useState<ParticipantResponse[]>([]);
   const [filteredParticipants, setFilteredParticipants] = useState<ParticipantResponse[]>([]);
@@ -28,7 +28,17 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
   // Function to switch to update form
   const handleEditParticipant = (participantId: number) => {
     setSelectedParticipantId(participantId);
-    setIsCreating(false);
+    // setIsCreating(false);
+  };
+
+  const handleDeleteParticipant = async (participantId: number) => {
+    try {
+      await deleteParticipant(participantId);
+      console.log("is delete, no participant anymore.. sadness: ", participantId);
+      setParticipants(await getAllParticipants());
+    } catch (error) {
+      console.error("AAAAAAAAAAAAAAAAAAAHHH cannot delete: ", error);
+    }
   };
 
   // Function to handle filtering based on all criteria
@@ -187,6 +197,7 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
                 <td>{participant.disciplines.map((discipline) => discipline.name)}</td> {/* Display discipline names */}
                 <td>
                   <button onClick={() => handleEditParticipant(participant.id!)}>Edit</button>
+                  <button onClick={() => handleDeleteParticipant(participant.id!)}>Slet</button>
                 </td>
               </tr>
             );
@@ -196,7 +207,8 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
 
       {/* Conditional rendering based on isCreating state */}
 
-      {isCreating ? <CreateParticipantForm /> : <UpdateParticipantForm participantId={selectedParticipantId!} />}
+      {<CreateParticipantForm participantId={selectedParticipantId!} setParticipants={setParticipants} />}
+      {/* {isCreating ? <CreateParticipantForm participantId={selectedParticipantId!} /> : <UpdateParticipantForm participantId={selectedParticipantId!} />} */}
       {/* {isCreating ? <CreateParticipantForm /> : <UpdateParticipantForm participantId={selectedParticipantId!} setSelectedParticipantId={setSelectedParticipantId} />} */}
 
       {/* <button onClick={handleCreateParticipant}>Create New Participant</button> */}
