@@ -34,6 +34,7 @@ export default function ParticipantDetails() {
             <p>Gender: {participant.gender}</p>
             <p>Club: {participant.clubName}</p>
             <h3>Disciplines:</h3>
+            {/* <ul style={{display: "grid", gridTemplateColumns: "1fr 1fr"}}> */}
             <ul>
               {participant.disciplines.map((discipline) => (
                 <li key={discipline.id}>{discipline.name}</li>
