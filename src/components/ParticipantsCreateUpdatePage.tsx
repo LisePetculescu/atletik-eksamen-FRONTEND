@@ -196,8 +196,12 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
                 <td>{participant.clubName}</td>
                 <td>{participant.disciplines.map((discipline) => discipline.name)}</td> {/* Display discipline names */}
                 <td>
-                  <button onClick={() => handleEditParticipant(participant.id!)}>Edit</button>
-                  <button onClick={() => handleDeleteParticipant(participant.id!)}>Slet</button>
+                  <button style={{ backgroundColor: "orange", color: "black" }} onClick={() => handleEditParticipant(participant.id!)}>
+                    Edit
+                  </button>
+                  <button style={{ backgroundColor: "red" }} onClick={() => handleDeleteParticipant(participant.id!)}>
+                    Slet
+                  </button>
                 </td>
               </tr>
             );
