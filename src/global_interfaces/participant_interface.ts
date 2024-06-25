@@ -1,4 +1,5 @@
 import { DisciplineResponse } from "./discipline_interface";
+import { ResultResponse } from "./result_interface";
 
 export type ParticipantResponse = {
     id?: number;
@@ -8,6 +9,7 @@ export type ParticipantResponse = {
     gender: string;
     ageGroup: string;
     disciplines: DisciplineResponse[];
+    results: ResultResponse[];
 };
 
 export type ParticipantRequest = {

@@ -75,7 +75,7 @@ export default function ResultsPage(): JSX.Element {
     <div>
       <h1>Resultater</h1>
       <label>
-        Vælg disciplin: 
+        Vælg disciplin:  
         <select onChange={(e) => setFilterValue(e.target.value)}>
           {disciplines.map((discipline) => <option value={discipline.name}>{discipline.name}</option> )}
         </select>
@@ -95,12 +95,12 @@ export default function ResultsPage(): JSX.Element {
           {results ? sortAndFilterResults().map((result) => (
             <tr key={result.id}>
               <td>{result.resultType}</td>
-              <td>{result.resultValue}</td>
+              <td>{result.result}</td>
               <td>{result.date}</td>
               <td>{result.participantName}</td>
               <td>{result.disciplineName}</td>
               <td>
-                <button onClick={() => handleDeleteResult(result.id!)}>Delete</button>
+                <button style={{backgroundColor: "red"}} onClick={() => handleDeleteResult(result.id!)}>Delete</button>
               </td>
             </tr>
           )): ""} 

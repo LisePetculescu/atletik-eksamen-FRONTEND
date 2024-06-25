@@ -3,6 +3,7 @@ import CreateParticipantForm from "./CreateOrUpdateParticipantForm";
 // import UpdateParticipantForm from "./UpdateParticipantForm";
 import { deleteParticipant, getAllParticipants } from "../services/fetchParticipants";
 import { ParticipantResponse } from "../global_interfaces/participant_interface";
+import { Link } from "react-router-dom";
 
 export default function ParticipantsCreateUpdatePage(): JSX.Element {
   // const [isCreating, setIsCreating] = useState(true); // Manage state to toggle between create and update form
@@ -163,7 +164,7 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
       </div>
 
       {/* Display list of participants in a table */}
-      <table>
+      <table style={{ borderSpacing: "10px", borderCollapse: "separate" }}>
         <thead>
           <tr>
             <th>
@@ -186,7 +187,7 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
             <th></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style={{ border: "" }}>
           {filteredParticipants.map((participant) => {
             return (
               <tr key={participant.id}>
@@ -195,13 +196,16 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
                 <td>{participant.gender}</td>
                 <td>{participant.clubName}</td>
                 <td>{participant.disciplines.map((discipline) => discipline.name)}</td> {/* Display discipline names */}
-                <td style={{display: "flex"}}>
+                <td style={{ display: "flex" }}>
                   <button style={{ backgroundColor: "orange", color: "black" }} onClick={() => handleEditParticipant(participant.id!)}>
                     Edit
                   </button>
                   <button style={{ backgroundColor: "red" }} onClick={() => handleDeleteParticipant(participant.id!)}>
                     Slet
                   </button>
+                  <Link to={`/participants/${participant.id}`}>
+                    <button style={{ backgroundColor: "green" }}>Se detaljer</button>
+                  </Link>
                 </td>
               </tr>
             );
@@ -209,13 +213,7 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
         </tbody>
       </table>
 
-      {/* Conditional rendering based on isCreating state */}
-
       {<CreateParticipantForm participantId={selectedParticipantId!} setParticipants={setParticipants} />}
-      {/* {isCreating ? <CreateParticipantForm participantId={selectedParticipantId!} /> : <UpdateParticipantForm participantId={selectedParticipantId!} />} */}
-      {/* {isCreating ? <CreateParticipantForm /> : <UpdateParticipantForm participantId={selectedParticipantId!} setSelectedParticipantId={setSelectedParticipantId} />} */}
-
-      {/* <button onClick={handleCreateParticipant}>Create New Participant</button> */}
     </div>
   );
 }
