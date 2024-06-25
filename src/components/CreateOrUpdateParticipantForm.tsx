@@ -200,7 +200,7 @@ export default function CreateParticipantForm({ participantId, setParticipants }
           </ul>
         </div>
 
-        <button type="submit">Tilføj</button>
+        <button type="submit">{participantId ? "Opdater" : "Tilføj"}</button>
         
       </form>
     </>

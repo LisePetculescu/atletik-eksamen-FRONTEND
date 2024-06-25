@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import CreateParticipantForm from "./CreateParticipantForm";
+import CreateParticipantForm from "./CreateOrUpdateParticipantForm";
 // import UpdateParticipantForm from "./UpdateParticipantForm";
 import { deleteParticipant, getAllParticipants } from "../services/fetchParticipants";
 import { ParticipantResponse } from "../global_interfaces/participant_interface";
@@ -195,7 +195,7 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
                 <td>{participant.gender}</td>
                 <td>{participant.clubName}</td>
                 <td>{participant.disciplines.map((discipline) => discipline.name)}</td> {/* Display discipline names */}
-                <td>
+                <td style={{display: "flex"}}>
                   <button style={{ backgroundColor: "orange", color: "black" }} onClick={() => handleEditParticipant(participant.id!)}>
                     Edit
                   </button>
