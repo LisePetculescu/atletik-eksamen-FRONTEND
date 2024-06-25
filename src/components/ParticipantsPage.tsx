@@ -6,7 +6,6 @@ import { ParticipantResponse } from "../global_interfaces/participant_interface"
 import { Link } from "react-router-dom";
 
 export default function ParticipantsCreateUpdatePage(): JSX.Element {
-  // const [isCreating, setIsCreating] = useState(true); // Manage state to toggle between create and update form
   const [selectedParticipantId, setSelectedParticipantId] = useState<number | null>(null);
   const [participants, setParticipants] = useState<ParticipantResponse[]>([]);
   const [filteredParticipants, setFilteredParticipants] = useState<ParticipantResponse[]>([]);
@@ -66,9 +65,9 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
 
     // Apply sorting
     updatedList.sort((a, b) => {
-      if (sortBy === "name") {
+      if (sortBy === "age") {
         return sortOrder === "asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-      } else if (sortBy === "age") {
+      } else if (sortBy === "name") {
         return sortOrder === "asc" ? a.age - b.age : b.age - a.age;
       } else if (sortBy === "club") {
         return sortOrder === "asc" ? a.clubName.localeCompare(b.clubName) : b.clubName.localeCompare(a.clubName);
@@ -86,7 +85,7 @@ export default function ParticipantsCreateUpdatePage(): JSX.Element {
     setAgeGroupFilter("");
     setClubFilter("");
     setDisciplineFilter("");
-    setSortBy("name");
+    setSortBy("age");
     setSortOrder("asc");
     setFilteredParticipants(participants);
   };
