@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { getAllResults, deleteResult } from "../services/fetchResults";
 import { ResultResponse } from "../global_interfaces/result_interface";
+import { getAllDisciplines } from "../services/fetchDisciplines";
+import { DisciplineResponse } from "../global_interfaces/discipline_interface";
 
 type SortDirection = "asc" | "desc";
 
@@ -8,14 +10,21 @@ export default function ResultsPage(): JSX.Element {
   const [results, setResults] = useState<ResultResponse[]>([]);
   const [sortType, setSortType] = useState<"resultType" | "resultValue">();
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [filterValue, setFilterValue] = useState("100m Sprint");
+  const [disciplines, setDisciplines] = useState<DisciplineResponse[]>([]);
 
   useEffect(() => {
     fetchResults();
+    getAllDisciplines().then((data) => setDisciplines(data));
   }, []); // Fetch results on initial render
+
+ 
 
   const fetchResults = async () => {
     try {
       const fetchedResults = await getAllResults();
+      console.log(fetchedResults);
+      
       setResults(fetchedResults);
     } catch (error) {
       console.error("Error fetching results:", error);
@@ -32,22 +41,25 @@ export default function ResultsPage(): JSX.Element {
     }
   };
 
-  const sortedResults = results.slice().sort((a, b) => {
-    if (sortType === "resultType") {
-      if (sortDirection === "asc") {
-        return a.resultType.localeCompare(b.resultType);
-      } else {
-        return b.resultType.localeCompare(a.resultType);
-      }
-    } else if (sortType === "resultValue") {
+
+  function sortAndFilterResults() {
+    console.log("før filter: ", results);
+    const filteredResults = results.filter((result) => result.disciplineName == filterValue);
+
+    console.log("efter filter: ", results);
+
+    const sortResults = filteredResults.sort((a, b) => {
       if (sortDirection === "asc") {
         return a.resultValue - b.resultValue;
       } else {
         return b.resultValue - a.resultValue;
       }
-    }
-    return 0;
-  });
+    });
+
+    console.log(sortResults);
+
+    return sortResults;
+  }
 
   const handleDeleteResult = async (id: number) => {
     try {
@@ -62,11 +74,17 @@ export default function ResultsPage(): JSX.Element {
   return (
     <div>
       <h1>Resultater</h1>
+      <label>
+        Vælg disciplin: 
+        <select onChange={(e) => setFilterValue(e.target.value)}>
+          {disciplines.map((discipline) => <option value={discipline.name}>{discipline.name}</option> )}
+        </select>
+      </label>
       <table>
         <thead>
           <tr>
-            <th onClick={() => handleSort("resultType")}>Result Type {sortType === "resultType" && <span>{sortDirection === "asc" ? "▲" : "▼"}</span>}</th>
-            <th onClick={() => handleSort("resultValue")}>Result Value {sortType === "resultValue" && <span>{sortDirection === "asc" ? "▲" : "▼"}</span>}</th>
+            <th>Result Type</th>
+            <th onClick={() => handleSort("resultValue")}>Result Value {<span>{sortDirection === "asc" ? "▲" : "▼"}</span>}</th>
             <th>Date</th>
             <th>Participant Name</th>
             <th>Discipline Name</th>
@@ -74,7 +92,7 @@ export default function ResultsPage(): JSX.Element {
           </tr>
         </thead>
         <tbody>
-          {sortedResults.map((result) => (
+          {results ? sortAndFilterResults().map((result) => (
             <tr key={result.id}>
               <td>{result.resultType}</td>
               <td>{result.resultValue}</td>
@@ -85,7 +103,7 @@ export default function ResultsPage(): JSX.Element {
                 <button onClick={() => handleDeleteResult(result.id!)}>Delete</button>
               </td>
             </tr>
-          ))}
+          )): ""} 
         </tbody>
       </table>
     </div>
